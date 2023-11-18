@@ -1,4 +1,6 @@
-import { useState } from 'react';
+"use client";
+
+import React, { useState } from 'react';
 import Image from 'next/image'
 import LogoSVG from '@/components/svg/logo';
 import { LensClient, development } from '@lens-protocol/client';
@@ -56,7 +58,7 @@ function Button({ children, variant = 'primary' }: any) {
 }
 
 export default function Home() {
-  const [verified, setVerified] = useState(false);
+  const [authenticated, setAuthenticated] = useState(false);
   const [veryfying, setVerifying] = useState(false);
   const [attestationData, setAttestationData] = useState(null);
   const [error, setError] = useState(null);
@@ -90,9 +92,9 @@ export default function Home() {
     const isAuthenticated = await client.authentication.isAuthenticated();
     console.log(`Is LensClient authenticated? `, isAuthenticated);
     if (!isAuthenticated) {
-      setVerified(false);
+      setAuthenticated(false);
     } else {
-      setVerified(true);
+      setAuthenticated(true);
     }
     setVerifying(false);
   }
@@ -127,12 +129,16 @@ export default function Home() {
     .then(response => response.json())
     .then(data => {
       setAttestationData(data.data.attestations)
-      setVerified(true);
+      setAuthenticated(true);
     })
     .catch(error => {
       setError(error)
     });
     setVerifying(false);
+  }
+
+  async function verifyWorldID() {
+
   }
 
   return (
