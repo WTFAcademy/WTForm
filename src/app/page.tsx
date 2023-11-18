@@ -160,7 +160,7 @@ export default function Home() {
       <div className="w-full text-stone-900 font-['Figma Hand'] font-bold leading-[96px]"> 
         <LogoSVG />
       </div>
-      <div className="w-full mt-20 mb-10 h-24 bg-stone-50 rounded-[18px] shadow text-center text-2xl font-bold leading-[96px]">
+      <div className="w-full mt-20 mb-10 py-12 bg-stone-50 rounded-[18px] shadow text-center text-2xl font-bold">
         ETHGlobal Istanbul Hackathon Feedback Form
       </div>
 
