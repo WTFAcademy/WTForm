@@ -1,7 +1,45 @@
+import { useState } from 'react';
 import Image from 'next/image'
 import LogoSVG from '@/components/svg/logo';
+import { LensClient, development } from '@lens-protocol/client';
 
 export default function Home() {
+  const [verified, setVerified] = useState(false);
+
+  async function lens(wallet: any, address: string) {
+    const client = new LensClient({
+      environment: development,
+      headers: {
+        origin: 'https://lens-scripts.example',
+        'user-agent':
+          'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36',
+      },
+    });
+    const managedProfiles = await client.wallet.profilesManaged({ for: address });
+  
+    if (managedProfiles.items.length === 0) {
+      throw new Error(`You don't manage any profiles, create one first`);
+    }
+  
+    const { id, text } = await client.authentication.generateChallenge({
+      signedBy: address,
+      for: managedProfiles.items[0].id,
+    });
+  
+    console.log(`Challenge: `, text);
+  
+    const signature = await wallet.signMessage(text);
+    await client.authentication.authenticate({ id, signature });
+  
+    const isAuthenticated = await client.authentication.isAuthenticated();
+    console.log(`Is LensClient authenticated? `, isAuthenticated);
+    if (!isAuthenticated) {
+      setVerified(false);
+    } else {
+      setVerified(true);
+    }
+  }
+
   return (
     <main className="flex px-8 py-8 min-h-screen flex-col items-center justify-between p-24 text-indigo-950 font-['DM Sans']">
 
