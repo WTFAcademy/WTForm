@@ -1,109 +1,113 @@
 import Image from 'next/image'
 import LogoSVG from '@/components/svg/logo';
 
+function Card({ children }: any) { 
+  return (          
+    <div className="w-full bg-stone-50 rounded-[34px] my-8 shadow border border-gray-100 p-8">
+      {children}
+    </div>
+  );
+}
+
+function Label({ children }: any) { 
+  return (          
+    <div className="pt-4 pb-5 text-lg font-medium leading-tight text-indigo-950">
+      {children}
+    </div>
+  );
+}
+
+function Button({ children, variant = 'primary' }: any) { 
+  switch(variant) {
+    case 'primary': {
+      return (    
+        <button className="inline-flex items-center justify-center p-0.5 mb-2 me-2 overflow-hidden text-[18px] 
+        tracking-wider font-semibold text-gray-900 rounded-[66px] 
+        bg-gradient-to-r from-teal-300 to-lime-300
+        dark:text-white dark:hover:text-gray-900 
+        group bg-gradient-to-br from-teal-300 to-lime-300 
+        group-hover:from-teal-300 group-hover:to-lime-300 hover:text-green-900
+        focus:ring-4 focus:outline-none focus:ring-lime-200 dark:focus:ring-lime-800">
+        <span className="px-12 py-3.5 transition-all ease duration-25 bg-white bg-opacity-0 dark:bg-gray-900 rounded-[66px] group-hover:bg-opacity-45">
+          {children}
+        </span>
+      </button>
+      )
+    }
+    default: {
+      return (    
+        <button className="inline-flex items-center justify-center p-0.5 mb-2 me-2 overflow-hidden text-[18px] 
+        tracking-wider font-semibold text-gray-900 rounded-[66px]  from-teal-300 to-lime-300
+        dark:text-gray-900 dark:hover:text-white
+        group bg-gradient-to-br from-teal-300 to-lime-300 
+        group-hover:to-bg-inherit group-hover:bg-inherit hover:text-inherit
+        focus:ring-4 focus:outline-none focus:ring-lime-200 dark:focus:ring-lime-800">
+        <span className="px-12 py-3.5 transition-all ease duration-25 bg-white dark:bg-gray-900 rounded-[66px] group-hover:bg-opacity-0">
+          {children}
+        </span>
+      </button>
+      )
+    }
+  }
+}
+
+
 export default function Home() {
   return (
-    <main className="flex px-8 py-8 min-h-screen flex-col items-center justify-between p-24 text-indigo-950 font-['DM Sans']">
+    <main className="flex px-10 py-12 min-h-screen flex-col items-center justify-between p-24 text-indigo-950 font-['DM Sans']">
 
       <div className="w-full text-stone-900 font-['Figma Hand'] font-bold leading-[96px]"> 
         <LogoSVG />
       </div>
-
-      <div className="w-full my-8 h-24 bg-white rounded-[18px] shadow text-center text-2xl font-bold leading-[96px]">
+      <div className="w-full mt-20 mb-10 h-24 bg-stone-50 rounded-[18px] shadow text-center text-2xl font-bold leading-[96px]">
         ETHGlobal Istanbul Hackathon Feedback Form
       </div>
 
       <div className="max-w-[620px] mb-8 text-center text-indigo-950">
-        <div className="text-center text-indigo-950 text-[34px] font-bold font-['DM Sans'] leading-[46px]">
+        <h2 className="text-indigo-950 pt-8 pb-4 text-[34px] font-bold font-['DM Sans'] leading-[46px]">
           Your Feedback Matters
-        </div>
-
-        <div className="text-center text-slate-500 text-lg font-medium leading-[30px]">
+        </h2>
+        <h3 className="text-slate-500 text-lg font-medium leading-[30px]">
           Hacker, thanks for participating at our event. Please help us improve future events by answering this quick survey.
-        </div>
+        </h3>
       </div>
 
-
-
-      <div className="bg-stone-50 rounded-[34px] shadow border border-gray-100 px-4">
+      <Card>
         <div className="text-2xl font-bold leading-[35px] text-indigo-950">
           Decentralized Identities
         </div>
-        <div className="font-['DM Sans'] left-[77.07px] top-[285px] w-[466.06px] text-lg font-medium leading-[30px] text-slate-500">
+        <div className="font-['DM Sans'] text-md font-medium leading-[30px] text-slate-500">
           Please provide your decentralized identities.
         </div>
-        <div className="h-[2px] w-full rounded-[34px] border border-gray-100 bg-stone-50 shadow"></div>
+  
+        {/* <div className="border border-zinc-200"></div> */}
+        <div className="h-[2px] my-8 w-full rounded-[34px] border border-gray-100 bg-stone-50 shadow"></div>
 
         <div>
-          <div className="text-lg font-medium leading-tight text-indigo-950">
-            Wallet
-          </div>
+          <Label>Wallet</Label>
 
-          <div className="inline-flex flex-col items-center justify-center rounded-[66px] border-2 border-violet-400 px-10 pb-[21px] pt-[19px]">
-            <div className="text-center text-[21px] font-semibold leading-tight text-fuchsia-500">
-              Sign
-            </div>
-          </div>
-
-          <div className="inline-flex items-center justify-center gap-2 rounded-[56px] bg-gradient-to-b from-violet-400 to-fuchsia-500 px-10 pb-[21px] pt-5 shadow">
-            <div className="text-center text-2xl font-bold leading-tight text-white">
-              Connect
-            </div>
-          </div>
-
-        </div>
-        <div>
-
-          <div className="inline-flex items-center justify-center gap-2 rounded-[56px] bg-gradient-to-b from-violet-400 to-fuchsia-500 px-10 pb-[21px] pt-5 shadow">
-            <div className="text-center text-2xl font-bold leading-tight text-white">
-              Sign
-            </div>
-          </div>
-
-          <div className="text-lg font-medium leading-tight text-indigo-950">
-            Lens
-          </div>
-
+          <Button>Connect</Button>
+          <Button variant="secondary">Sign</Button>
         </div>
 
         <div>
-
-          <div className="inline-flex items-center justify-center gap-2 rounded-[56px] bg-gradient-to-b from-violet-400 to-fuchsia-500 px-10 pb-[21px] pt-5 shadow">
-            <div className="text-center text-2xl font-bold leading-tight text-white">
-              Sign
-            </div>
-          </div>
-
-          <div className="text-lg font-medium leading-tight text-indigo-950">
-            PolygonID
-          </div>
-
+          <Label>Lens</Label>
+          <Button>Connect</Button>
         </div>
 
         <div>
-
-          <div className="inline-flex items-center justify-center gap-2 rounded-[56px] bg-gradient-to-b from-violet-400 to-fuchsia-500 px-10 pb-[21px] pt-5 shadow">
-            <div className="text-center text-2xl font-bold leading-tight text-white">
-              Attest
-            </div>
-          </div>
-
-          <div className="text-lg font-medium leading-tight text-indigo-950">
-            EAS
-          </div>
-
+          <Label>Polygon ID</Label>
+          <Button>Connect</Button>
         </div>
 
-        <div className="text-center text-lg font-medium leading-[30px] text-slate-500">
-          Hacker, thanks for participating at our event. Please help us improve future events by answering this quick survey.<br />
+        <div>
+          <Label>EAS</Label>
+          <Button>Attest</Button>
         </div>
+    </Card>
 
-        <div className="border border-zinc-200"></div>
-    </div>
 
-    <div>
-
-    <div className="rounded-[34px] border border-gray-100 bg-stone-50 shadow">
+    <Card className="rounded-[34px] border border-gray-100 bg-stone-50 shadow">
       <div className="text-2xl font-bold leading-[35px] text-indigo-950">
         Your Feedback
       </div>
@@ -173,11 +177,7 @@ export default function Home() {
       
       </div>
 
-    </div>
-
-    </div>
-
-
+    </Card>
 
     <div className="bg-stone-50 rounded-[34px] shadow border border-gray-100">
     </div>
