@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import Image from 'next/image'
 import { useWeb3Modal } from '@web3modal/wagmi/react';
-import { useAccount } from 'wagmi';
+import { useAccount, useSignMessage } from 'wagmi';
 
 import LogoSVG from '@/components/svg/logo';
 import { LensClient, development } from '@lens-protocol/client';
@@ -75,10 +75,12 @@ export default function Home() {
   const [attestationData, setAttestationData] = useState(null);
   const [error, setError] = useState(null);
   const { loginWithRedirect } = useAuth0();
+  const { signMessageAsync } = useSignMessage();
 
-  const { address, /* isConnecting: isConnectingWalletConnect, isDisconnected */ } = useAccount();
+  let { address, /* isConnecting: isConnectingWalletConnect, isDisconnected */ } = useAccount();
 
   async function verifyLens() {
+    console.log("jhere");
     setVerifying(true);
     const client = new LensClient({
       environment: development,
@@ -100,10 +102,9 @@ export default function Home() {
     });
   
     console.log(`Challenge: `, text);
-  
-    const signature = await wallet.signMessage(text);
+    const signature = await signMessageAsync({ message: text });
     await client.authentication.authenticate({ id, signature });
-  
+
     const isAuthenticated = await client.authentication.isAuthenticated();
     console.log(`Is LensClient authenticated? `, isAuthenticated);
     if (!isAuthenticated) {
@@ -143,6 +144,7 @@ export default function Home() {
     })
     .then(response => response.json())
     .then(data => {
+      console.log(data.data.attestations);
       setAttestationData(data.data.attestations)
       setAuthenticated(true);
     })
@@ -193,7 +195,7 @@ export default function Home() {
 
         <div>
           <Label>Lens</Label>
-          <Button>Connect</Button>
+          <Button onClickHandler={verifyLens}>Connect</Button>
         </div>
 
         <div>
