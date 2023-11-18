@@ -1,43 +1,189 @@
 import Image from 'next/image'
+import LogoSVG from '@/components/svg/logo';
 
 export default function Home() {
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-24">
-      <div className="z-10 max-w-5xl w-full items-center justify-between font-mono text-sm lg:flex">
-        <p className="fixed left-0 top-0 flex w-full justify-center border-b border-gray-300 bg-gradient-to-b from-zinc-200 pb-6 pt-8 backdrop-blur-2xl dark:border-neutral-800 dark:bg-zinc-800/30 dark:from-inherit lg:static lg:w-auto  lg:rounded-xl lg:border lg:bg-gray-200 lg:p-4 lg:dark:bg-zinc-800/30">
-          Get started by editing&nbsp;
-          <code className="font-mono font-bold">src/app/page.tsx</code>
-        </p>
-        <div className="fixed bottom-0 left-0 flex h-48 w-full items-end justify-center bg-gradient-to-t from-white via-white dark:from-black dark:via-black lg:static lg:h-auto lg:w-auto lg:bg-none">
-          <a
-            className="pointer-events-none flex place-items-center gap-2 p-8 lg:pointer-events-auto lg:p-0"
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            By{' '}
-            <Image
-              src="/vercel.svg"
-              alt="Vercel Logo"
-              className="dark:invert"
-              width={100}
-              height={24}
-              priority
-            />
-          </a>
+    <main className="flex px-8 py-8 min-h-screen flex-col items-center justify-between p-24 text-indigo-950 font-['DM Sans']">
+
+      <div className="w-full text-stone-900 font-['Figma Hand'] font-bold leading-[96px]"> 
+        <LogoSVG />
+      </div>
+
+      <div className="w-full my-8 h-24 bg-white rounded-[18px] shadow text-center text-2xl font-bold leading-[96px]">
+        ETHGlobal Istanbul Hackathon Feedback Form
+      </div>
+
+      <div className="max-w-[620px] mb-8 text-center text-indigo-950">
+        <div className="text-center text-indigo-950 text-[34px] font-bold font-['DM Sans'] leading-[46px]">
+          Your Feedback Matters
+        </div>
+
+        <div className="text-center text-slate-500 text-lg font-medium leading-[30px]">
+          Hacker, thanks for participating at our event. Please help us improve future events by answering this quick survey.
         </div>
       </div>
 
-      <div className="relative flex place-items-center before:absolute before:h-[300px] before:w-[480px] before:-translate-x-1/2 before:rounded-full before:bg-gradient-radial before:from-white before:to-transparent before:blur-2xl before:content-[''] after:absolute after:-z-20 after:h-[180px] after:w-[240px] after:translate-x-1/3 after:bg-gradient-conic after:from-sky-200 after:via-blue-200 after:blur-2xl after:content-[''] before:dark:bg-gradient-to-br before:dark:from-transparent before:dark:to-blue-700 before:dark:opacity-10 after:dark:from-sky-900 after:dark:via-[#0141ff] after:dark:opacity-40 before:lg:h-[360px] z-[-1]">
-        <Image
-          className="relative dark:drop-shadow-[0_0_0.3rem_#ffffff70] dark:invert"
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
-        />
+
+
+      <div className="bg-stone-50 rounded-[34px] shadow border border-gray-100 px-4">
+        <div className="text-2xl font-bold leading-[35px] text-indigo-950">
+          Decentralized Identities
+        </div>
+        <div className="font-['DM Sans'] left-[77.07px] top-[285px] w-[466.06px] text-lg font-medium leading-[30px] text-slate-500">
+          Please provide your decentralized identities.
+        </div>
+        <div className="h-[2px] w-full rounded-[34px] border border-gray-100 bg-stone-50 shadow"></div>
+
+        <div>
+          <div className="text-lg font-medium leading-tight text-indigo-950">
+            Wallet
+          </div>
+
+          <div className="inline-flex flex-col items-center justify-center rounded-[66px] border-2 border-violet-400 px-10 pb-[21px] pt-[19px]">
+            <div className="text-center text-[21px] font-semibold leading-tight text-fuchsia-500">
+              Sign
+            </div>
+          </div>
+
+          <div className="inline-flex items-center justify-center gap-2 rounded-[56px] bg-gradient-to-b from-violet-400 to-fuchsia-500 px-10 pb-[21px] pt-5 shadow">
+            <div className="text-center text-2xl font-bold leading-tight text-white">
+              Connect
+            </div>
+          </div>
+
+        </div>
+        <div>
+
+          <div className="inline-flex items-center justify-center gap-2 rounded-[56px] bg-gradient-to-b from-violet-400 to-fuchsia-500 px-10 pb-[21px] pt-5 shadow">
+            <div className="text-center text-2xl font-bold leading-tight text-white">
+              Sign
+            </div>
+          </div>
+
+          <div className="text-lg font-medium leading-tight text-indigo-950">
+            Lens
+          </div>
+
+        </div>
+
+        <div>
+
+          <div className="inline-flex items-center justify-center gap-2 rounded-[56px] bg-gradient-to-b from-violet-400 to-fuchsia-500 px-10 pb-[21px] pt-5 shadow">
+            <div className="text-center text-2xl font-bold leading-tight text-white">
+              Sign
+            </div>
+          </div>
+
+          <div className="text-lg font-medium leading-tight text-indigo-950">
+            PolygonID
+          </div>
+
+        </div>
+
+        <div>
+
+          <div className="inline-flex items-center justify-center gap-2 rounded-[56px] bg-gradient-to-b from-violet-400 to-fuchsia-500 px-10 pb-[21px] pt-5 shadow">
+            <div className="text-center text-2xl font-bold leading-tight text-white">
+              Attest
+            </div>
+          </div>
+
+          <div className="text-lg font-medium leading-tight text-indigo-950">
+            EAS
+          </div>
+
+        </div>
+
+        <div className="text-center text-lg font-medium leading-[30px] text-slate-500">
+          Hacker, thanks for participating at our event. Please help us improve future events by answering this quick survey.<br />
+        </div>
+
+        <div className="border border-zinc-200"></div>
+    </div>
+
+    <div>
+
+    <div className="rounded-[34px] border border-gray-100 bg-stone-50 shadow">
+      <div className="text-2xl font-bold leading-[35px] text-indigo-950">
+        Your Feedback
       </div>
+
+      <div>
+        <div className="inline-flex flex-col items-start justify-start">
+          <div className="text-lg font-medium leading-tight text-indigo-950">
+            How would you rate this event overall?
+          </div>
+          
+          <div className="text-base font-medium leading-tight text-slate-500">
+            On a scale of 1-10 with 10 being Great
+          </div>
+          
+          <div className="relative">
+            <div className="rounded-[46px] border border-gray-100 bg-white shadow">
+            </div>
+            
+            <div className="text-lg font-normal leading-tight text-slate-500">
+              Select..
+            </div>
+          </div>
+          
+          <div className="text-lg font-medium leading-tight text-indigo-950">
+            How would you rate this event overall?
+          </div>
+          
+          <div className="text-base font-medium leading-tight text-slate-500">
+            On a scale of 1-10 with 10 being Great
+          </div>
+          
+          <div className="relative">
+            <div className="rounded-[46px] border border-gray-100 bg-white shadow">
+            </div>
+          
+            <div className="text-lg font-normal leading-tight text-slate-500">
+              Select..
+            </div>
+          </div>
+          
+          <div className="text-lg font-medium leading-tight text-indigo-950">
+            How would you rate the technical support you received during the event?
+          </div>
+          
+          // other form fields
+          
+        </div>
+        
+      </div>
+
+      <div>
+      
+        <div className="text-lg font-medium leading-tight text-indigo-950">
+          Do you have any other feedback or suggestions on how we can make future events better?
+        </div>
+        
+        <div>
+        
+          <div className="rounded-[21px] border border-gray-100 bg-white shadow">
+          </div>
+        
+          <div className="text-lg font-normal leading-tight text-slate-500">
+            Please mention here  
+          </div>
+          
+        </div>
+      
+      </div>
+
+    </div>
+
+    </div>
+
+
+
+    <div className="bg-stone-50 rounded-[34px] shadow border border-gray-100">
+    </div>
+      
+
+      {/* EVERYTHING BELOW THIS IS FROM CREATE-REACT-APP */}
 
       <div className="mb-32 grid text-center lg:max-w-5xl lg:w-full lg:mb-0 lg:grid-cols-4 lg:text-left">
         <a
