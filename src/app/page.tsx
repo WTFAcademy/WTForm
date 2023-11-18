@@ -91,7 +91,7 @@ export default function Home() {
       },
     });
     const managedProfiles = await client.wallet.profilesManaged({ for: address! });
-  
+    console.log(address)
     if (managedProfiles.items.length === 0) {
       throw new Error(`You don't manage any profiles, create one first`);
     }
