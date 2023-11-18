@@ -7,7 +7,7 @@ import { useAccount, useSignMessage } from 'wagmi';
 import { ethers } from 'ethers';
 
 import LogoSVG from '@/components/svg/logo';
-import { LensClient, development } from '@lens-protocol/client';
+import { LensClient, production } from '@lens-protocol/client';
 import { useAuth0 } from "@auth0/auth0-react";
 import { EAS } from "@ethereum-attestation-service/eas-sdk";
 
@@ -102,38 +102,31 @@ export default function Home() {
   let { address, /* isConnecting: isConnectingWalletConnect, isDisconnected */ } = useAccount();
 
   async function verifyLens() {
-    setVerifying(true);
     const client = new LensClient({
-      environment: development,
-      headers: {
-        origin: 'https://lens-scripts.example',
-        'user-agent':
-          'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36',
-      },
+      environment: production,
     });
     const managedProfiles = await client.wallet.profilesManaged({ for: address! });
   
     if (managedProfiles.items.length === 0) {
       alert(`You don't manage any profiles, create one first`);
-    }
-  
-    const { id, text } = await client.authentication.generateChallenge({
-      signedBy: address!,
-      for: managedProfiles.items[0].id,
-    });
-  
-    console.log(`Challenge: `, text);
-    const signature = await signMessageAsync({ message: text });
-    await client.authentication.authenticate({ id, signature });
-
-    const isAuthenticated = await client.authentication.isAuthenticated();
-    console.log(`Is LensClient authenticated? `, isAuthenticated);
-    if (!isAuthenticated) {
-      setAuthenticated(false);
     } else {
-      setAuthenticated(true);
+      const { id, text } = await client.authentication.generateChallenge({
+        signedBy: address!,
+        for: managedProfiles.items[0].id,
+      });
+    
+      console.log(`Challenge: `, text);
+      const signature = await signMessageAsync({ message: text });
+      await client.authentication.authenticate({ id, signature });
+
+      const isAuthenticated = await client.authentication.isAuthenticated();
+      console.log(`Is LensClient authenticated? `, isAuthenticated);
+      if (!isAuthenticated) {
+        setAuthenticated(false);
+      } else {
+        setAuthenticated(true);
+      }
     }
-    setVerifying(false);
   }
 
   async function verifyEAS() {
