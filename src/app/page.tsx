@@ -4,10 +4,12 @@ import React, { useState } from 'react';
 import Image from 'next/image'
 import { useWeb3Modal } from '@web3modal/wagmi/react';
 import { useAccount, useSignMessage } from 'wagmi';
+import { ethers } from 'ethers';
 
 import LogoSVG from '@/components/svg/logo';
 import { LensClient, development } from '@lens-protocol/client';
 import { useAuth0 } from "@auth0/auth0-react";
+import { EAS } from "@ethereum-attestation-service/eas-sdk";
 
 // UI Components (Generic)
 
@@ -80,7 +82,6 @@ export default function Home() {
   let { address, /* isConnecting: isConnectingWalletConnect, isDisconnected */ } = useAccount();
 
   async function verifyLens() {
-    console.log("jhere");
     setVerifying(true);
     const client = new LensClient({
       environment: development,
@@ -93,7 +94,7 @@ export default function Home() {
     const managedProfiles = await client.wallet.profilesManaged({ for: address! });
   
     if (managedProfiles.items.length === 0) {
-      throw new Error(`You don't manage any profiles, create one first`);
+      alert(`You don't manage any profiles, create one first`);
     }
   
     const { id, text } = await client.authentication.generateChallenge({
@@ -117,41 +118,46 @@ export default function Home() {
 
   async function verifyEAS() {
     setVerifying(true);
-    const query = {
-      query: `
-        query Attestation {
-          attestations(
-            where: { recipient: { eq: "${address}" } }
-            first: 1
+    const graphqlQuery = `
+        {
+          attestations(where: { 
+              recipient: { equals: "0x0fb166cDdF1387C5b63fFa25721299fD7b068f3f" } 
+          }
+          take: 1
           ) {
             id
-            attester
-            recipient
-            refUID
-            revocable
-            revocationTime
-            expirationTime
-            data
           }
         }
-      `
-    };
+      `;
+    
+    const requestBody = JSON.stringify({
+      query: graphqlQuery
+    });
 
     await fetch('https://easscan.org/graphql', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(query),
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: requestBody,
     })
-    .then(response => response.json())
+    .then(response => {
+      if (!response.ok) {
+        throw new Error('Network response was not ok: ' + response.statusText);
+      }
+      return response.json();
+    })
     .then(data => {
-      console.log(data.data.attestations);
+      console.log("Response data: ", data);
+      alert(data.data.attestations);
       setAttestationData(data.data.attestations)
       setAuthenticated(true);
     })
     .catch(error => {
-      setError(error)
+      console.error("Fetch error: ", error);
+      setError(error);
+    })
+    .finally(() => {
+      setVerifying(false);
     });
-    setVerifying(false);
   }
 
   async function verifyWorldID() {
@@ -205,7 +211,7 @@ export default function Home() {
 
         <div>
           <Label>EAS</Label>
-          <Button>Attest</Button>
+          <Button onClickHandler={verifyEAS}>Attest</Button>
         </div>
     </Card>
 
