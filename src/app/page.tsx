@@ -2,8 +2,13 @@
 
 import React, { useState } from 'react';
 import Image from 'next/image'
+import { useWeb3Modal } from '@web3modal/wagmi/react';
+import { useAccount } from 'wagmi';
+
 import LogoSVG from '@/components/svg/logo';
 import { LensClient, development } from '@lens-protocol/client';
+
+// UI Components (Generic)
 
 function Card({ children }: any) { 
   return (          
@@ -21,7 +26,7 @@ function Label({ children }: any) {
   );
 }
 
-function Button({ children, variant = 'primary' }: any) { 
+function Button({ children, onClickHandler, variant = 'primary' }: any) { 
   let btnClasses = 'inline-flex items-center justify-center p-0.5 mb-2 me-2 overflow-hidden text-[18px] tracking-wider font-semibold rounded-[66px] group bg-gradient-to-br focus:ring-4 focus:outline-none ';
   let btnClassesSpan;
   
@@ -49,7 +54,7 @@ function Button({ children, variant = 'primary' }: any) {
   }
 
   return (    
-    <button className={btnClasses}>
+    <button className={btnClasses} onClick={onClickHandler}>
       <span className={btnClassesSpan}>
         {children}
       </span>
@@ -57,11 +62,19 @@ function Button({ children, variant = 'primary' }: any) {
   )
 }
 
+// Components (with Context)
+function WalletConnectButton() {
+  return <w3m-button />
+}
+
+
 export default function Home() {
   const [authenticated, setAuthenticated] = useState(false);
   const [veryfying, setVerifying] = useState(false);
   const [attestationData, setAttestationData] = useState(null);
   const [error, setError] = useState(null);
+
+  const { address, /* isConnecting: isConnectingWalletConnect, isDisconnected */ } = useAccount();
 
   async function verifyLens() {
     setVerifying(true);
@@ -172,10 +185,8 @@ export default function Home() {
         <div className="h-[2px] my-8 w-full rounded-[34px] border border-gray-100 bg-stone-50 shadow"></div>
 
         <div>
-          <Label>Wallet</Label>
-
-          <Button>Connect</Button>
-          <Button variant="secondary">Sign</Button>
+          <Label>WalletConnect</Label>
+          <WalletConnectButton />
         </div>
 
         <div>
