@@ -1,5 +1,7 @@
+import { useState } from 'react';
 import Image from 'next/image'
 import LogoSVG from '@/components/svg/logo';
+import { LensClient, development } from '@lens-protocol/client';
 
 function Card({ children }: any) { 
   return (          
@@ -54,6 +56,85 @@ function Button({ children, variant = 'primary' }: any) {
 }
 
 export default function Home() {
+  const [verified, setVerified] = useState(false);
+  const [veryfying, setVerifying] = useState(false);
+  const [attestationData, setAttestationData] = useState(null);
+  const [error, setError] = useState(null);
+
+  async function verifyLens() {
+    setVerifying(true);
+    const client = new LensClient({
+      environment: development,
+      headers: {
+        origin: 'https://lens-scripts.example',
+        'user-agent':
+          'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36',
+      },
+    });
+    const managedProfiles = await client.wallet.profilesManaged({ for: address });
+  
+    if (managedProfiles.items.length === 0) {
+      throw new Error(`You don't manage any profiles, create one first`);
+    }
+  
+    const { id, text } = await client.authentication.generateChallenge({
+      signedBy: address,
+      for: managedProfiles.items[0].id,
+    });
+  
+    console.log(`Challenge: `, text);
+  
+    const signature = await wallet.signMessage(text);
+    await client.authentication.authenticate({ id, signature });
+  
+    const isAuthenticated = await client.authentication.isAuthenticated();
+    console.log(`Is LensClient authenticated? `, isAuthenticated);
+    if (!isAuthenticated) {
+      setVerified(false);
+    } else {
+      setVerified(true);
+    }
+    setVerifying(false);
+  }
+
+  async function verifyEAS() {
+    setVerifying(true);
+    const query = {
+      query: `
+        query Attestation {
+          attestations(
+            where: { recipient: { eq: "${address}" } }
+            first: 1
+          ) {
+            id
+            attester
+            recipient
+            refUID
+            revocable
+            revocationTime
+            expirationTime
+            data
+          }
+        }
+      `
+    };
+
+    await fetch('https://easscan.org/graphql', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(query),
+    })
+    .then(response => response.json())
+    .then(data => {
+      setAttestationData(data.data.attestations)
+      setVerified(true);
+    })
+    .catch(error => {
+      setError(error)
+    });
+    setVerifying(false);
+  }
+
   return (
     <main className="flex px-10 py-12 min-h-screen flex-col items-center justify-between p-24 text-indigo-950 font-['DM Sans']">
 
