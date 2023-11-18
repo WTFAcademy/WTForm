@@ -90,14 +90,14 @@ export default function Home() {
           'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36',
       },
     });
-    const managedProfiles = await client.wallet.profilesManaged({ for: address });
+    const managedProfiles = await client.wallet.profilesManaged({ for: address! });
   
     if (managedProfiles.items.length === 0) {
       throw new Error(`You don't manage any profiles, create one first`);
     }
   
     const { id, text } = await client.authentication.generateChallenge({
-      signedBy: address,
+      signedBy: address!,
       for: managedProfiles.items[0].id,
     });
   
