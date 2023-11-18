@@ -5,8 +5,12 @@ import { LensClient, development } from '@lens-protocol/client';
 
 export default function Home() {
   const [verified, setVerified] = useState(false);
+  const [veryfying, setVerifying] = useState(false);
+  const [attestationData, setAttestationData] = useState(null);
+  const [error, setError] = useState(null);
 
-  async function lens(wallet: any, address: string) {
+  async function verifyLens() {
+    setVerifying(true);
     const client = new LensClient({
       environment: development,
       headers: {
@@ -38,6 +42,45 @@ export default function Home() {
     } else {
       setVerified(true);
     }
+    setVerifying(false);
+  }
+
+  async function verifyEAS() {
+    setVerifying(true);
+    const query = {
+      query: `
+        query Attestation {
+          attestations(
+            where: { recipient: { eq: "${address}" } }
+            first: 1
+          ) {
+            id
+            attester
+            recipient
+            refUID
+            revocable
+            revocationTime
+            expirationTime
+            data
+          }
+        }
+      `
+    };
+
+    await fetch('https://easscan.org/graphql', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(query),
+    })
+    .then(response => response.json())
+    .then(data => {
+      setAttestationData(data.data.attestations)
+      setVerified(true);
+    })
+    .catch(error => {
+      setError(error)
+    });
+    setVerifying(false);
   }
 
   return (
