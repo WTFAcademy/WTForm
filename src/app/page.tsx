@@ -44,6 +44,26 @@ function Button({ children, onClickHandler, variant = 'primary' }: any) {
        btnClassesSpan = "px-12 py-3.5 transition-all ease duration-25 bg-white bg-opacity-0 dark:bg-gray-900 rounded-[66px] group-hover:bg-opacity-40";
        break;
       }
+    case 'blue': {
+      btnClasses += `text-white
+      bg-gradient-to-br from-purple-600 to-blue-500 
+      hover:bg-gradient-to-bl 
+      focus:ring-4 focus:outline-none focus:ring-blue-300 
+      dark:focus:ring-blue-800 
+      font-medium text-center me-2 mb-2`
+      btnClassesSpan = "px-12 py-3.5 transition-all ease duration-25 bg-white bg-opacity-0 dark:bg-gray-900 rounded-[66px] group-hover:bg-opacity-40";
+      break;
+    }
+    case 'red': {
+      btnClasses += `text-white
+      bg-gradient-to-br from-pink-500 to-orange-400
+      hover:bg-gradient-to-bl 
+      focus:ring-4 focus:outline-none focus:ring-pink-200 
+      dark:focus:ring-pink-800 
+      font-medium text-center me-2 mb-2`;
+      btnClassesSpan = "px-12 py-3.5 transition-all ease duration-25 bg-white bg-opacity-0 dark:bg-gray-900 rounded-[66px] group-hover:bg-opacity-40";
+      break;
+    }
       // secondary
       default: {
       btnClasses += `text-gray-900 from-teal-300 to-lime-300
@@ -70,12 +90,12 @@ function WalletConnectButton() {
   return <w3m-button />
 }
 
-
 export default function Home() {
   const [authenticated, setAuthenticated] = useState(false);
   const [veryfying, setVerifying] = useState(false);
   const [attestationData, setAttestationData] = useState(null);
   const [error, setError] = useState(null);
+  const [easState, setEasState] = useState(0); // 0 as initial state, 1 as attested, 2 as not attested 
   const { loginWithRedirect } = useAuth0();
   const { signMessageAsync } = useSignMessage();
 
@@ -117,11 +137,10 @@ export default function Home() {
   }
 
   async function verifyEAS() {
-    setVerifying(true);
     const graphqlQuery = `
         {
           attestations(where: { 
-              recipient: { equals: "0x0fb166cDdF1387C5b63fFa25721299fD7b068f3f" } 
+              recipient: { equals: "${address}" } 
           }
           take: 1
           ) {
@@ -133,6 +152,8 @@ export default function Home() {
     const requestBody = JSON.stringify({
       query: graphqlQuery
     });
+
+    console.log(address);
 
     await fetch('https://easscan.org/graphql', {
       method: 'POST',
@@ -147,17 +168,15 @@ export default function Home() {
     })
     .then(data => {
       console.log("Response data: ", data);
-      alert(data.data.attestations);
+      alert("numbers of attestation records: " + data.data.attestations.length);
+      if (data.data.attestations.length === 0) {
+        setEasState(2);
+      } else {
+        setEasState(1);
+        setAuthenticated(true);
+      }
       setAttestationData(data.data.attestations)
-      setAuthenticated(true);
     })
-    .catch(error => {
-      console.error("Fetch error: ", error);
-      setError(error);
-    })
-    .finally(() => {
-      setVerifying(false);
-    });
   }
 
   async function verifyWorldID() {
@@ -211,7 +230,12 @@ export default function Home() {
 
         <div>
           <Label>EAS</Label>
-          <Button onClickHandler={verifyEAS}>Attest</Button>
+          {
+            easState === 0 ?
+            <Button onClickHandler={verifyEAS}>Attest</Button> : easState === 1 
+              ? <Button variant="blue">Succeed</Button>
+              : <Button variant='red'>Failed</Button>
+          }
         </div>
     </Card>
 
