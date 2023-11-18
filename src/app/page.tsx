@@ -18,39 +18,40 @@ function Label({ children }: any) {
 }
 
 function Button({ children, variant = 'primary' }: any) { 
+  let btnClasses = 'inline-flex items-center justify-center p-0.5 mb-2 me-2 overflow-hidden text-[18px] tracking-wider font-semibold rounded-[66px] group bg-gradient-to-br focus:ring-4 focus:outline-none ';
+  let btnClassesSpan;
+  
   switch(variant) {
     case 'primary': {
-      return (    
-        <button className="inline-flex items-center justify-center p-0.5 mb-2 me-2 overflow-hidden text-[18px] 
-        tracking-wider font-semibold text-gray-900 rounded-[66px] 
+      btnClasses += `text-gray-900 
         bg-gradient-to-r from-teal-300 to-lime-300
         dark:text-white dark:hover:text-gray-900 
-        group bg-gradient-to-br from-teal-300 to-lime-300 
+        from-teal-300 to-lime-300 
         group-hover:from-teal-300 group-hover:to-lime-300 hover:text-green-900
-        focus:ring-4 focus:outline-none focus:ring-lime-200 dark:focus:ring-lime-800">
-        <span className="px-12 py-3.5 transition-all ease duration-25 bg-white bg-opacity-0 dark:bg-gray-900 rounded-[66px] group-hover:bg-opacity-45">
-          {children}
-        </span>
-      </button>
-      )
-    }
-    default: {
-      return (    
-        <button className="inline-flex items-center justify-center p-0.5 mb-2 me-2 overflow-hidden text-[18px] 
-        tracking-wider font-semibold text-gray-900 rounded-[66px]  from-teal-300 to-lime-300
+        focus:ring-lime-200 dark:focus:ring-lime-800`;
+       btnClassesSpan = "px-12 py-3.5 transition-all ease duration-25 bg-white bg-opacity-0 dark:bg-gray-900 rounded-[66px] group-hover:bg-opacity-40";
+       break;
+      }
+      // secondary
+      default: {
+      btnClasses += `text-gray-900 from-teal-300 to-lime-300
         dark:text-gray-900 dark:hover:text-white
-        group bg-gradient-to-br from-teal-300 to-lime-300 
+        from-teal-300 to-lime-300 
         group-hover:to-bg-inherit group-hover:bg-inherit hover:text-inherit
-        focus:ring-4 focus:outline-none focus:ring-lime-200 dark:focus:ring-lime-800">
-        <span className="px-12 py-3.5 transition-all ease duration-25 bg-white dark:bg-gray-900 rounded-[66px] group-hover:bg-opacity-0">
-          {children}
-        </span>
-      </button>
-      )
+        focus:ring-lime-200 dark:focus:ring-lime-800`;
+       btnClassesSpan = "px-12 py-3.5 transition-all ease duration-25 bg-white dark:bg-gray-900 rounded-[66px] group-hover:bg-opacity-0";
+       break;
     }
   }
-}
 
+  return (    
+    <button className={btnClasses}>
+      <span className={btnClassesSpan}>
+        {children}
+      </span>
+    </button>
+  )
+}
 
 export default function Home() {
   return (
