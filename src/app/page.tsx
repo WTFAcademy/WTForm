@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import Image from 'next/image'
 import LogoSVG from '@/components/svg/logo';
 import { LensClient, development } from '@lens-protocol/client';
+import { useAuth0 } from "@auth0/auth0-react";
 
 function Card({ children }: any) { 
   return (          
@@ -62,6 +63,7 @@ export default function Home() {
   const [veryfying, setVerifying] = useState(false);
   const [attestationData, setAttestationData] = useState(null);
   const [error, setError] = useState(null);
+  const { loginWithRedirect } = useAuth0();
 
   async function verifyLens() {
     setVerifying(true);
