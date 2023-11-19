@@ -25,6 +25,9 @@ body {
       rgb(var(--background-end-rgb))
     )
     rgb(var(--background-start-rgb));
+
+    display: flex;
+    justify-content: center;
 }
 
 button:not([disabled]),
