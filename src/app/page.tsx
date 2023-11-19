@@ -241,7 +241,7 @@ export default function Home() {
     // todo: uncomment to unlock buck
     // const [field, meta, helpers] = useField(_props);
     const { description, name, options, placeholder, prompt,  variant, ...props } = _props;
-    const inputSharedClasses = `bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 ${formik.errors[name] ? 'border-red-500' : ''}`;
+    const inputSharedClasses = `bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 ${formik.touched[name] && formik.errors[name] ? 'border-red-500' : ''}`;
     let inputJSX;
 
     switch(variant) {
