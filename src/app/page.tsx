@@ -171,11 +171,11 @@ export default function Home() {
 
   const formik = useFormik({
     initialValues: {
-      rateOverall: '',
-      rateSupport: '',
-      rateRecommend: '',
-      selectGoal: '',
-      selectSource: '',
+      rateOverall: undefined,
+      rateSupport: undefined,
+      rateRecommend: undefined,
+      selectGoal: undefined,
+      selectSource: undefined,
       textFeedback: '',
     },
     onSubmit: values => {
@@ -185,7 +185,7 @@ export default function Home() {
       const errors = {};
   
       for (const key in values) {
-        if (!values[key]) {
+        if (!values[key] || values[key] === '') {
           errors[key] = 'Required';
         }
       }
@@ -194,27 +194,31 @@ export default function Home() {
     },
   });
 
-  function FormEntry({ description, name, options, placeholder, prompt,  variant, ...props }: any) {
+  function FormEntry(_props: { name: string, prompt: string, description?: string, placeholder?: string, variant?: string, options?: any[]}) {
+    // const [field, meta, helpers] = useField(_props);
+    const { description, name, options, placeholder, prompt,  variant, ...props } = _props;
     const inputSharedClasses = `bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 ${formik.errors[name] ? 'border-red-500' : ''}`;
     let inputJSX;
 
     switch(variant) {
       case 'textarea': {
-        inputJSX = (<textarea 
-          id={name} 
-          name={name}
-          rows={4} 
-          value={formik.values[name]}
-          onChange={formik.handleChange}
-          onBlur={formik.handleBlur}
-          className={`block p-2.5 w-full ${inputSharedClasses}`}
-          placeholder={placeholder || 'Please mention here'} />
+        inputJSX = (
+          <textarea 
+            id={name} 
+            name={name}
+            rows={4} 
+            value={formik.values[name]}
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+            className={`block p-2.5 w-full ${inputSharedClasses}`}
+            placeholder={placeholder || 'Please mention here'} />
         )
         break;
       }
       default: {
         inputJSX = (
-          <select id={formik.values[name]} name={formik.values[name]} 
+          <select id={formik.values[name]} 
+            name={formik.values[name]} 
             className={inputSharedClasses}
             onChange={formik.handleChange}>
             <option value={undefined} selected disabled hidden>{placeholder || 'Select an answer'}</option>
@@ -315,7 +319,7 @@ export default function Home() {
       <div className="text-2xl font-bold leading-[35px] text-indigo-950">
         Your Feedback
       </div>
-
+      
       <form onSubmit={formik.handleSubmit}>
         <FormEntry
           variant="select"
