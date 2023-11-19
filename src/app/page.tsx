@@ -216,7 +216,16 @@ export default function Home() {
     Select: 'select',
   }
 
-  const formik = useFormik({
+  type FormikValues = {
+    rateOverall?: number;
+    rateSupport?: number;
+    rateRecommend?: number;
+    selectGoal?: string;
+    selectSource?: string;
+    textFeedback: string;
+  };
+
+  const formik = useFormik<FormikValues>({
     initialValues: {
       rateOverall: undefined,
       rateSupport: undefined,
@@ -232,8 +241,11 @@ export default function Home() {
       const errors = {};
   
       for (const key in values) {
-        if (!values[key] || values[key] === '') {
-          errors[key] = 'Required';
+        // Use type assertion to tell TypeScript that key is indeed a key of values
+        const specificKey = key as keyof typeof values;
+      
+        if (!values[specificKey] || values[specificKey] === '') {
+          errors[specificKey] = 'Required';
         }
       }
   
@@ -245,7 +257,7 @@ export default function Home() {
     // todo: uncomment to unlock buck
     // const [field, meta, helpers] = useField(_props);
     const { description, name, options, placeholder, prompt,  variant, ...props } = _props;
-    const inputSharedClasses = `bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 ${formik.errors[name] ? 'border-red-500' : ''}`;
+    const inputSharedClasses = `bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 ${formik.touched[name] && formik.errors[name] ? 'border-red-500' : ''}`;
     let inputJSX;
 
     switch(variant) {
@@ -255,7 +267,7 @@ export default function Home() {
             id={name} 
             name={name}
             rows={4} 
-            value={formik.values[name]}
+            value={formik.values[name as keyof FormikValues]} // Add type assertion
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
             className={`block p-2.5 w-full ${inputSharedClasses}`}
@@ -265,10 +277,12 @@ export default function Home() {
       }
       default: {
         inputJSX = (
-          <select id={formik.values[name]} 
-            name={formik.values[name]} 
+          <select id={name} 
+            name={name}
+            value={formik.values[name as keyof FormikValues]}
             className={inputSharedClasses}
-            onChange={formik.handleChange}>
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}>
             <option value={undefined} selected disabled hidden>{placeholder || 'Select an answer'}</option>
             {options ? options.map((option: any, index: number) => {
               return <option value={option.value} key={`form-entry-select-${name}-${index}`}>{option.label}</option>
@@ -377,13 +391,6 @@ export default function Home() {
       <div className="text-2xl font-bold leading-[35px] text-indigo-950">
         Your Feedback
       </div>
-
-      {/* {formik.values.rateOverall}
-      {formik.values.rateSupport}
-      {formik.values.rateRecommend}
-      {formik.values.selectSource}
-      {formik.values.selectGoal}
-      {formik.values.textFeedback} */}
       
       <form onSubmit={formik.handleSubmit}>
         <FormEntry
