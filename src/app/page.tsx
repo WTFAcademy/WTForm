@@ -20,9 +20,9 @@ function Card({ children }: any) {
   );
 }
 
-function Label({ children }: any) { 
+function Label({ children, className }: any) { 
   return (          
-    <div className="pt-4 pb-5 text-lg font-medium leading-tight text-indigo-950">
+    <div className={`pt-4 text-lg font-medium leading-tight text-indigo-950 ${className}`}>
       {children}
     </div>
   );
@@ -241,15 +241,17 @@ export default function Home() {
     }
 
     return (
-      <div className="mb-6" {...props}>
-        <Label htmlFor={name} className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
-          {prompt}
-        </Label>
-        {description ?? (
-          <div className="text-base font-medium leading-tight text-slate-500">
-            {description}
-          </div>
-        )}
+      <div className="mb-8" {...props}>
+        <div className="mb-8">
+          <Label htmlFor={name} className="block text-gray-900 dark:text-white">
+            {prompt}
+          </Label>
+          {description ? (
+            <div className="text-base pt-2 leading-tight text-zinc-500">
+              {description}
+            </div>
+          ) : null}
+        </div>
         {inputJSX}
       </div>
     );
@@ -288,22 +290,22 @@ export default function Home() {
         <div className="h-[2px] my-8 w-full rounded-[34px] border border-gray-100 bg-stone-50 shadow"></div>
 
         <div>
-          <Label>WalletConnect</Label>
+          <Label className="pb-5">WalletConnect</Label>
           <WalletConnectButton />
         </div>
 
         <div>
-          <Label>Lens</Label>
+          <Label className="pb-5">Lens</Label>
           <Button onClickHandler={verifyLens}>Connect</Button>
         </div>
 
         <div>
-          <Label>Polygon ID</Label>
+          <Label className="pb-5">Polygon ID</Label>
           <Button>Connect</Button>
         </div>
 
         <div>
-          <Label>EAS</Label>
+          <Label className="pb-5">EAS</Label>
           <Button>Attest</Button>
         </div>
     </Card>
