@@ -162,7 +162,7 @@ export default function Home() {
 
     console.log(address);
 
-    await fetch('https://easscan.org/graphql', {
+    await fetch('https://sepolia.easscan.org/graphql', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: requestBody,
@@ -230,7 +230,7 @@ export default function Home() {
           {
             lensState === 0 ?
             <Button onClickHandler={verifyLens}>Connect</Button> : lensState === 1 
-              ? <Button variant="blue">lensText</Button>
+              ? <Button variant="blue">{lensText}</Button>
               : <Button variant='red'>Failed</Button>
           }
         </div>
