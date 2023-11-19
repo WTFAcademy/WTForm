@@ -1,7 +1,9 @@
 import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
-import { Auth0Provider } from '@auth0/auth0-react';
 import { Web3Modal } from "@/context/Web3Modal";
+// import { SessionProvider } from "next-auth/react"
+// import type { AppProps } from "next/app"
+// import type { Session } from "next-auth"
 
 import './globals.css'
 
@@ -20,17 +22,11 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-        {/* <Auth0Provider
-          domain="dev-0iu7uwkq2z18z0b6.us.auth0.com"
-          clientId="kAUYPqHDP3DKp7qEFVD1tWWWW6Rn3jrg"
-          authorizationParams={{
-            redirect_uri: window.location.origin
-          }}
-        > */}
+        {/* <SessionProvider session={session}> */}
           <Web3Modal>
             {children}
           </Web3Modal>
-        {/* </Auth0Provider> */}
+        {/* </SessionProvider> */}
       </body>
     </html>
   )

@@ -11,6 +11,7 @@ import LogoSVG from '@/components/svg/logo';
 import { LensClient, production } from '@lens-protocol/client';
 import { useAuth0 } from "@auth0/auth0-react";
 import { EAS } from "@ethereum-attestation-service/eas-sdk";
+import auth0 from 'auth0-js';
 
 // UI Components (Generic)
 
@@ -188,7 +189,20 @@ export default function Home() {
   }
 
   async function verifyWorldID() {
-
+    var webAuth = new auth0.WebAuth({
+      domain:       'dev-0iu7uwkq2z18z0b6.us.auth0.com',
+      clientID:     'IAZew7jaHbxtW0zQaCzBzMSd77lwzJqg'
+    });
+    webAuth.popup.authorize({
+      responseType: 'token',
+      redirectUri: 'https://wtform.vercel.app/api/auth/callback/worldcoin',
+      domain: 'dev-0iu7uwkq2z18z0b6.us.auth0.com',
+    }, function (err, authResult) {
+      //do something
+      console.log(authResult);
+      console.log(err);
+    });
+    // webAuth.popup.callback();
   }
 
   /** Start Formik */
@@ -339,8 +353,8 @@ export default function Home() {
         </div>
 
         <div>
-          <Label className="pb-5">Polygon ID</Label>
-          <Button>Connect</Button>
+          <Label>World ID</Label>
+          <Button onClickHandler={verifyWorldID}>Connect</Button>
         </div>
 
         <div>
