@@ -262,7 +262,7 @@ export default function Home() {
 
         var config = {
           method: 'post',
-          url: 'api.wtf.academy/hackathon/feedback',
+          url: 'https://api.wtf.academy/hackathon/feedback',
           headers: { 
             'Content-Type': 'application/json'
           },
