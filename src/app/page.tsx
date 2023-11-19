@@ -99,7 +99,7 @@ export default function Home() {
   const [error, setError] = useState(null);
   const [easState, setEasState] = useState(0); // 0 as initial state, 1 as attested, 2 as not attested 
   const [lensState, setLensState] = useState(0); // 0 as initial state, 1 as attested, 2 as not attested
-  const [lensText, setLensText] = useState("");
+  // const [lensText, setLensText] = useState("");
   const { loginWithRedirect } = useAuth0();
   const { signMessageAsync } = useSignMessage();
 
@@ -140,11 +140,6 @@ export default function Home() {
         setLensState(2);
       } else {
         setLensState(1);
-        if (managedProfiles.items[0].handle) {
-          setLensText(managedProfiles.items[0].handle!.toString());
-        } else {
-          setLensText(managedProfiles.items[0].id);
-        }
       }
     }
   }
@@ -351,7 +346,7 @@ export default function Home() {
           {
             lensState === 0 ?
             <Button onClickHandler={verifyLens}>Connect</Button> : lensState === 1 
-              ? <Button variant="blue">{lensText}</Button>
+              ? <Button variant="blue">Succeed</Button>
               : <Button variant='red'>Failed</Button>
           }
         </div>
