@@ -212,7 +212,16 @@ export default function Home() {
     Select: 'select',
   }
 
-  const formik = useFormik({
+  type FormikValues = {
+    rateOverall?: number;
+    rateSupport?: number;
+    rateRecommend?: number;
+    selectGoal?: string;
+    selectSource?: string;
+    textFeedback: string;
+  };
+
+  const formik = useFormik<FormikValues>({
     initialValues: {
       rateOverall: undefined,
       rateSupport: undefined,
@@ -254,7 +263,7 @@ export default function Home() {
             id={name} 
             name={name}
             rows={4} 
-            value={formik.values[name]}
+            value={formik.values[name as keyof FormikValues]} // Add type assertion
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
             className={`block p-2.5 w-full ${inputSharedClasses}`}
@@ -266,7 +275,7 @@ export default function Home() {
         inputJSX = (
           <select id={name} 
             name={name}
-            value={formik.values[name]}
+            value={formik.values[name as keyof FormikValues]}
             className={inputSharedClasses}
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}>
