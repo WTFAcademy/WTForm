@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import Image from 'next/image'
+import { useField, useFormik } from 'formik';
 import { useWeb3Modal } from '@web3modal/wagmi/react';
 import { useAccount, useSignMessage } from 'wagmi';
 import { ethers } from 'ethers';
@@ -21,15 +22,15 @@ function Card({ children }: any) {
   );
 }
 
-function Label({ children }: any) { 
+function Label({ children, className }: any) { 
   return (          
-    <div className="pt-4 pb-5 text-lg font-medium leading-tight text-indigo-950">
+    <div className={`pt-4 text-lg font-medium leading-tight text-indigo-950 ${className}`}>
       {children}
     </div>
   );
 }
 
-function Button({ children, onClickHandler, variant = 'primary' }: any) { 
+function Button({ children, onClickHandler, variant = 'primary', ...props }: any) { 
   let btnClasses = 'inline-flex items-center justify-center p-0.5 mb-2 me-2 overflow-hidden text-[18px] tracking-wider font-semibold rounded-[66px] group bg-gradient-to-br focus:ring-4 focus:outline-none ';
   let btnClassesSpan;
   
@@ -77,7 +78,7 @@ function Button({ children, onClickHandler, variant = 'primary' }: any) {
   }
 
   return (    
-    <button className={btnClasses} onClick={onClickHandler}>
+    <button className={btnClasses} onClick={onClickHandler} {...props} >
       <span className={btnClassesSpan}>
         {children}
       </span>
@@ -190,13 +191,115 @@ export default function Home() {
 
   }
 
+  /** Start Formik */
+
+  const FormEntryType = {
+    TextArea: 'textarea',
+    Select: 'select',
+  }
+
+  const formik = useFormik({
+    initialValues: {
+      rateOverall: undefined,
+      rateSupport: undefined,
+      rateRecommend: undefined,
+      selectGoal: undefined,
+      selectSource: undefined,
+      textFeedback: '',
+    },
+    onSubmit: values => {
+      alert(JSON.stringify(values, null, 2));
+    },
+    validate: values => {
+      const errors = {};
+  
+      for (const key in values) {
+        if (!values[key] || values[key] === '') {
+          errors[key] = 'Required';
+        }
+      }
+  
+      return errors;
+    },
+  });
+
+  function FormEntry(_props: { name: string, prompt: string, description?: string, placeholder?: string, variant?: string, options?: any[]}) {
+    // todo: uncomment to unlock buck
+    // const [field, meta, helpers] = useField(_props);
+    const { description, name, options, placeholder, prompt,  variant, ...props } = _props;
+    const inputSharedClasses = `bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 ${formik.errors[name] ? 'border-red-500' : ''}`;
+    let inputJSX;
+
+    switch(variant) {
+      case 'textarea': {
+        inputJSX = (
+          <textarea 
+            id={name} 
+            name={name}
+            rows={4} 
+            value={formik.values[name]}
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+            className={`block p-2.5 w-full ${inputSharedClasses}`}
+            placeholder={placeholder || 'Please mention here'} />
+        )
+        break;
+      }
+      default: {
+        inputJSX = (
+          <select id={formik.values[name]} 
+            name={formik.values[name]} 
+            className={inputSharedClasses}
+            onChange={formik.handleChange}>
+            <option value={undefined} selected disabled hidden>{placeholder || 'Select an answer'}</option>
+            {options ? options.map((option: any, index: number) => {
+              return <option value={option.value} key={`form-entry-select-${name}-${index}`}>{option.label}</option>
+            }) : (
+              <>
+                <option value={10}>10</option>
+                <option value={9}>9</option>
+                <option value={8}>8</option>
+                <option value={7}>7</option>
+                <option value={6}>6</option>
+                <option value={5}>5</option>
+                <option value={4}>4</option>
+                <option value={3}>3</option>
+                <option value={2}>2</option>
+                <option value={1}>1</option>
+              </>
+            )
+            }
+          </select>
+        )
+      }
+    }
+
+    return (
+      <div className="mb-8" {...props}>
+        <div className="mb-8">
+          <Label htmlFor={name} className="block text-gray-900 dark:text-white">
+            {prompt}
+          </Label>
+          {description ? (
+            <div className="text-base pt-2 leading-tight text-zinc-500">
+              {description}
+            </div>
+          ) : null}
+        </div>
+        {inputJSX}
+      </div>
+    );
+  }
+
+  /** End Formik */
+
   return (
     <main className="flex px-10 py-12 min-h-screen flex-col items-center justify-between p-24 text-indigo-950 font-['DM Sans']">
 
       <div className="w-full text-stone-900 font-['Figma Hand'] font-bold leading-[96px]"> 
         <LogoSVG />
       </div>
-      <div className="w-full mt-20 mb-10 py-12 bg-stone-50 rounded-[18px] shadow text-center text-2xl font-bold">
+      <div className="w-full mt-20 mb-10 py-12 px-8 bg-stone-50 rounded-[18px] shadow text-center text-2xl font-bold">
         ETHGlobal Istanbul Hackathon Feedback Form
       </div>
 
@@ -221,12 +324,12 @@ export default function Home() {
         <div className="h-[2px] my-8 w-full rounded-[34px] border border-gray-100 bg-stone-50 shadow"></div>
 
         <div>
-          <Label>WalletConnect</Label>
+          <Label className="pb-5">WalletConnect</Label>
           <WalletConnectButton />
         </div>
 
         <div>
-          <Label>Lens</Label>
+          <Label className="pb-5">Lens</Label>
           {
             lensState === 0 ?
             <Button onClickHandler={verifyLens}>Connect</Button> : lensState === 1 
@@ -236,12 +339,12 @@ export default function Home() {
         </div>
 
         <div>
-          <Label>Polygon ID</Label>
+          <Label className="pb-5">Polygon ID</Label>
           <Button>Connect</Button>
         </div>
 
         <div>
-          <Label>EAS</Label>
+          <Label className="pb-5">EAS</Label>
           {
             easState === 0 ?
             <Button onClickHandler={verifyEAS}>Attest</Button> : easState === 1 
@@ -252,76 +355,80 @@ export default function Home() {
     </Card>
 
 
-    <Card className="rounded-[34px] border border-gray-100 bg-stone-50 shadow">
+    <Card>
       <div className="text-2xl font-bold leading-[35px] text-indigo-950">
         Your Feedback
       </div>
 
-      <div>
-        <div className="inline-flex flex-col items-start justify-start">
-          <div className="text-lg font-medium leading-tight text-indigo-950">
-            How would you rate this event overall?
-          </div>
-          
-          <div className="text-base font-medium leading-tight text-slate-500">
-            On a scale of 1-10 with 10 being Great
-          </div>
-          
-          <div className="relative">
-            <div className="rounded-[46px] border border-gray-100 bg-white shadow">
-            </div>
-            
-            <div className="text-lg font-normal leading-tight text-slate-500">
-              Select..
-            </div>
-          </div>
-          
-          <div className="text-lg font-medium leading-tight text-indigo-950">
-            How would you rate this event overall?
-          </div>
-          
-          <div className="text-base font-medium leading-tight text-slate-500">
-            On a scale of 1-10 with 10 being Great
-          </div>
-          
-          <div className="relative">
-            <div className="rounded-[46px] border border-gray-100 bg-white shadow">
-            </div>
-          
-            <div className="text-lg font-normal leading-tight text-slate-500">
-              Select..
-            </div>
-          </div>
-          
-          <div className="text-lg font-medium leading-tight text-indigo-950">
-            How would you rate the technical support you received during the event?
-          </div>
-          
-          // other form fields
-          
-        </div>
-        
-      </div>
-
-      <div>
+      {/* {formik.values.rateOverall}
+      {formik.values.rateSupport}
+      {formik.values.rateRecommend}
+      {formik.values.selectSource}
+      {formik.values.selectGoal}
+      {formik.values.textFeedback} */}
       
-        <div className="text-lg font-medium leading-tight text-indigo-950">
-          Do you have any other feedback or suggestions on how we can make future events better?
-        </div>
-        
-        <div>
-        
-          <div className="rounded-[21px] border border-gray-100 bg-white shadow">
-          </div>
-        
-          <div className="text-lg font-normal leading-tight text-slate-500">
-            Please mention here  
-          </div>
-          
-        </div>
-      
-      </div>
-
+      <form onSubmit={formik.handleSubmit}>
+        <FormEntry
+          variant="select"
+          prompt="How would you rate this event overall?"
+          description="On a scale of 1-10 with 10 being Great"
+          name="rateOverall"
+          />
+        <FormEntry
+          variant="select"
+          prompt="How would you rate the technical support you received during the event?"
+          description="On a scale of 1-10 with 10 being Great"
+          name="rateSupport"
+          />
+        <FormEntry
+          variant="select"
+          prompt="Would you recommend the hackathon to a friend or colleague?"
+          description="On a scale of 1-10 with 10 being Great"
+          name="rateRecommend"
+          />
+        <FormEntry
+          variant="select"
+          prompt="How did you hear about this hackathon?"
+          name="selectSource"
+          options={[
+            { value: 'socialMedia', label: 'Social Media (Facebook, Twitter, LinkedIn, etc.)' },
+            { value: 'email', label: 'Email Newsletter' },
+            { value: 'online', label: 'Website / Online Advertisement' },
+            { value: 'friend', label: 'Word of Mouth / Friends / Family' },
+            { value: 'school', label: 'University / School' },
+            { value: 'event', label: 'Meetup / Event' },
+            { value: 'previousAttendee', label: 'Previous Attendee' },
+            { value: 'other', label: 'Other' },
+          ]}
+          />
+        <FormEntry
+          variant="select"
+          prompt="What were you hoping to achieve at the hackathon?"
+          name="selectGoal"
+          options={[
+            { value: 'learn', label: 'Learn new skills or technologies.' },
+            { value: 'network', label: 'Network with other professionals or students in the field.' },
+            { value: 'develop', label: 'Develop a prototype or start a new project.' },
+            { value: 'jobOpportunities', label: 'Seek potential employment or internship opportunities.' },
+            { value: 'contribute', label: 'Contribute to the community or a cause.' },
+            { value: 'succeed', label: 'Win prizes or gain recognition.' },
+            { value: 'fun', label: 'Have fun and enjoy the experience.' },
+            { value: 'other', label: 'Other' },
+          ]}
+          />
+        <FormEntry
+          variant="textarea"
+          prompt="Do you have any other feedback or suggestions on how we can make future events better?"
+          name="textFeedback"
+          />
+  
+        <Button>
+          Submit{' '}
+          <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
+            →
+          </span>
+        </Button>
+      </form>
     </Card>
 
     <div className="bg-stone-50 rounded-[34px] shadow border border-gray-100">
