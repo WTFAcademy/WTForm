@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Image from 'next/image'
 import { useWeb3Modal } from '@web3modal/wagmi/react';
 import { useAccount, useSignMessage } from 'wagmi';
@@ -96,10 +96,20 @@ export default function Home() {
   const [attestationData, setAttestationData] = useState(null);
   const [error, setError] = useState(null);
   const [easState, setEasState] = useState(0); // 0 as initial state, 1 as attested, 2 as not attested 
+  const [lensState, setLensState] = useState(0); // 0 as initial state, 1 as attested, 2 as not attested
+  const [lensText, setLensText] = useState("");
   const { loginWithRedirect } = useAuth0();
   const { signMessageAsync } = useSignMessage();
 
   let { address, /* isConnecting: isConnectingWalletConnect, isDisconnected */ } = useAccount();
+
+  useEffect(() => {
+    if (easState === 1 || lensState === 1) {
+      setAuthenticated(true);
+    } else {
+      setAuthenticated(false);
+    }
+  }, [easState, lensState]);
 
   async function verifyLens() {
     const client = new LensClient({
@@ -109,6 +119,7 @@ export default function Home() {
   
     if (managedProfiles.items.length === 0) {
       alert(`You don't manage any profiles, create one first`);
+      setLensState(2);
     } else {
       const { id, text } = await client.authentication.generateChallenge({
         signedBy: address!,
@@ -120,11 +131,11 @@ export default function Home() {
       await client.authentication.authenticate({ id, signature });
 
       const isAuthenticated = await client.authentication.isAuthenticated();
-      console.log(`Is LensClient authenticated? `, isAuthenticated);
       if (!isAuthenticated) {
-        setAuthenticated(false);
+        setLensState(2);
       } else {
-        setAuthenticated(true);
+        setLensState(1);
+        setLensText(managedProfiles.items[0].id);
       }
     }
   }
@@ -213,7 +224,12 @@ export default function Home() {
 
         <div>
           <Label>Lens</Label>
-          <Button onClickHandler={verifyLens}>Connect</Button>
+          {
+            lensState === 0 ?
+            <Button onClickHandler={verifyLens}>Connect</Button> : lensState === 1 
+              ? <Button variant="blue">lensText</Button>
+              : <Button variant='red'>Failed</Button>
+          }
         </div>
 
         <div>
