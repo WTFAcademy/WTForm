@@ -227,7 +227,7 @@ export default function Home() {
           {
             lensState === 0 ?
             <Button onClickHandler={verifyLens}>Connect</Button> : lensState === 1 
-              ? <Button variant="blue">lensText</Button>
+              ? <Button variant="blue">{lensText}</Button>
               : <Button variant='red'>Failed</Button>
           }
         </div>
