@@ -1,14 +1,16 @@
 "use client";
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Image from 'next/image'
 import { useField, useFormik } from 'formik';
 import { useWeb3Modal } from '@web3modal/wagmi/react';
 import { useAccount, useSignMessage } from 'wagmi';
+import { ethers } from 'ethers';
 
 import LogoSVG from '@/components/svg/logo';
-import { LensClient, development } from '@lens-protocol/client';
+import { LensClient, production } from '@lens-protocol/client';
 import { useAuth0 } from "@auth0/auth0-react";
+import { EAS } from "@ethereum-attestation-service/eas-sdk";
 
 // UI Components (Generic)
 
@@ -43,6 +45,26 @@ function Button({ children, onClickHandler, variant = 'primary', ...props }: any
        btnClassesSpan = "px-12 py-3.5 transition-all ease duration-25 bg-white bg-opacity-0 dark:bg-gray-900 rounded-[66px] group-hover:bg-opacity-40";
        break;
       }
+    case 'blue': {
+      btnClasses += `text-white
+      bg-gradient-to-br from-purple-600 to-blue-500 
+      hover:bg-gradient-to-bl 
+      focus:ring-4 focus:outline-none focus:ring-blue-300 
+      dark:focus:ring-blue-800 
+      font-medium text-center me-2 mb-2`
+      btnClassesSpan = "px-12 py-3.5 transition-all ease duration-25 bg-white bg-opacity-0 dark:bg-gray-900 rounded-[66px] group-hover:bg-opacity-40";
+      break;
+    }
+    case 'red': {
+      btnClasses += `text-white
+      bg-gradient-to-br from-pink-500 to-orange-400
+      hover:bg-gradient-to-bl 
+      focus:ring-4 focus:outline-none focus:ring-pink-200 
+      dark:focus:ring-pink-800 
+      font-medium text-center me-2 mb-2`;
+      btnClassesSpan = "px-12 py-3.5 transition-all ease duration-25 bg-white bg-opacity-0 dark:bg-gray-900 rounded-[66px] group-hover:bg-opacity-40";
+      break;
+    }
       // secondary
       default: {
       btnClasses += `text-gray-900 from-teal-300 to-lime-300
@@ -69,27 +91,30 @@ function WalletConnectButton() {
   return <w3m-button />
 }
 
-
 export default function Home() {
   const [authenticated, setAuthenticated] = useState(false);
   const [veryfying, setVerifying] = useState(false);
   const [attestationData, setAttestationData] = useState(null);
   const [error, setError] = useState(null);
+  const [easState, setEasState] = useState(0); // 0 as initial state, 1 as attested, 2 as not attested 
+  const [lensState, setLensState] = useState(0); // 0 as initial state, 1 as attested, 2 as not attested
+  const [lensText, setLensText] = useState("");
   const { loginWithRedirect } = useAuth0();
   const { signMessageAsync } = useSignMessage();
 
   let { address, /* isConnecting: isConnectingWalletConnect, isDisconnected */ } = useAccount();
 
+  useEffect(() => {
+    if (easState === 1 || lensState === 1) {
+      setAuthenticated(true);
+    } else {
+      setAuthenticated(false);
+    }
+  }, [easState, lensState]);
+
   async function verifyLens() {
-    console.log("jhere");
-    setVerifying(true);
     const client = new LensClient({
-      environment: development,
-      headers: {
-        origin: 'https://lens-scripts.example',
-        'user-agent':
-          'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36',
-      },
+      environment: production,
     });
     const managedProfiles = await client.wallet.profilesManaged({ for: address! });
     
@@ -97,65 +122,69 @@ export default function Home() {
     console.log("profiles: ", managedProfiles)
 
     if (managedProfiles.items.length === 0) {
-      throw new Error(`You don't manage any profiles, create one first`);
-    }
-  
-    const { id, text } = await client.authentication.generateChallenge({
-      signedBy: address!,
-      for: managedProfiles.items[0].id,
-    });
-  
-    console.log(`Challenge: `, text);
-    const signature = await signMessageAsync({ message: text });
-    await client.authentication.authenticate({ id, signature });
-
-    const isAuthenticated = await client.authentication.isAuthenticated();
-    console.log(`Is LensClient authenticated? `, isAuthenticated);
-    if (!isAuthenticated) {
-      setAuthenticated(false);
+      alert(`You don't manage any profiles, create one first`);
+      setLensState(2);
     } else {
-      setAuthenticated(true);
+      const { id, text } = await client.authentication.generateChallenge({
+        signedBy: address!,
+        for: managedProfiles.items[0].id,
+      });
+    
+      console.log(`Challenge: `, text);
+      const signature = await signMessageAsync({ message: text });
+      await client.authentication.authenticate({ id, signature });
+
+      const isAuthenticated = await client.authentication.isAuthenticated();
+      if (!isAuthenticated) {
+        setLensState(2);
+      } else {
+        setLensState(1);
+        setLensText(managedProfiles.items[0].id);
+      }
     }
-    setVerifying(false);
   }
 
   async function verifyEAS() {
-    setVerifying(true);
-    const query = {
-      query: `
-        query Attestation {
-          attestations(
-            where: { recipient: { eq: "${address}" } }
-            first: 1
+    const graphqlQuery = `
+        {
+          attestations(where: { 
+              recipient: { equals: "${address}" } 
+          }
+          take: 1
           ) {
             id
-            attester
-            recipient
-            refUID
-            revocable
-            revocationTime
-            expirationTime
-            data
           }
         }
-      `
-    };
-
-    await fetch('https://easscan.org/graphql', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(query),
-    })
-    .then(response => response.json())
-    .then(data => {
-      console.log(data.data.attestations);
-      setAttestationData(data.data.attestations)
-      setAuthenticated(true);
-    })
-    .catch(error => {
-      setError(error)
+      `;
+    
+    const requestBody = JSON.stringify({
+      query: graphqlQuery
     });
-    setVerifying(false);
+
+    console.log(address);
+
+    await fetch('https://sepolia.easscan.org/graphql', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: requestBody,
+    })
+    .then(response => {
+      if (!response.ok) {
+        throw new Error('Network response was not ok: ' + response.statusText);
+      }
+      return response.json();
+    })
+    .then(data => {
+      console.log("Response data: ", data);
+      alert("numbers of attestation records: " + data.data.attestations.length);
+      if (data.data.attestations.length === 0) {
+        setEasState(2);
+      } else {
+        setEasState(1);
+        setAuthenticated(true);
+      }
+      setAttestationData(data.data.attestations)
+    })
   }
 
   async function verifyWorldID() {
@@ -301,7 +330,12 @@ export default function Home() {
 
         <div>
           <Label className="pb-5">Lens</Label>
-          <Button onClickHandler={verifyLens}>Connect</Button>
+          {
+            lensState === 0 ?
+            <Button onClickHandler={verifyLens}>Connect</Button> : lensState === 1 
+              ? <Button variant="blue">{lensText}</Button>
+              : <Button variant='red'>Failed</Button>
+          }
         </div>
 
         <div>
@@ -311,7 +345,12 @@ export default function Home() {
 
         <div>
           <Label className="pb-5">EAS</Label>
-          <Button>Attest</Button>
+          {
+            easState === 0 ?
+            <Button onClickHandler={verifyEAS}>Attest</Button> : easState === 1 
+              ? <Button variant="blue">Succeed</Button>
+              : <Button variant='red'>Failed</Button>
+          }
         </div>
     </Card>
 

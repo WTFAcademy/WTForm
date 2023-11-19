@@ -141,7 +141,7 @@
 
 "@ethereum-attestation-service/eas-sdk@^1.3.3":
   version "1.3.3"
-  resolved "https://registry.yarnpkg.com/@ethereum-attestation-service/eas-sdk/-/eas-sdk-1.3.3.tgz#9a02c317e0c3fbf7c715e5bd3e0edba6c1facb88"
+  resolved "https://registry.npmmirror.com/@ethereum-attestation-service/eas-sdk/-/eas-sdk-1.3.3.tgz#9a02c317e0c3fbf7c715e5bd3e0edba6c1facb88"
   integrity sha512-6k9c0L/C7qrA7vkAn+tlaqN6umAjg3KUJtgChtlLbO89WDKSAm4x4YhcyrjMtCSG+ugMtLwZG3OwKJYsFYvOWw==
   dependencies:
     "@ethereum-attestation-service/eas-contracts" "1.3.0-beta.0"
@@ -3997,7 +3997,7 @@ ethers@^5.7.1:
 
 ethers@^6.8.1:
   version "6.8.1"
-  resolved "https://registry.yarnpkg.com/ethers/-/ethers-6.8.1.tgz#ee2a1a39b5f62a13678f90ccd879175391d0a2b4"
+  resolved "https://registry.npmmirror.com/ethers/-/ethers-6.8.1.tgz#ee2a1a39b5f62a13678f90ccd879175391d0a2b4"
   integrity sha512-iEKm6zox5h1lDn6scuRWdIdFJUCGg3+/aQWu0F4K0GVyEZiktFkqrJbRjTn1FlYEPz7RKA707D6g5Kdk6j7Ljg==
   dependencies:
     "@adraffy/ens-normalize" "1.10.0"
@@ -7290,7 +7290,7 @@ vue@>=3:
 
 wagmi@^1.4.7:
   version "1.4.7"
-  resolved "https://registry.yarnpkg.com/wagmi/-/wagmi-1.4.7.tgz#4236007e3d01359c4281cce34b7884ddcae3fa02"
+  resolved "https://registry.npmmirror.com/wagmi/-/wagmi-1.4.7.tgz#4236007e3d01359c4281cce34b7884ddcae3fa02"
   integrity sha512-/k8gA9S6RnwU6Qroxs630jAFvRIx+DSKpCP1owgAEGWc7D2bAJHljwRSCRTGENz48HyJ4V3R7KYV1yImxPvM3A==
   dependencies:
     "@tanstack/query-sync-storage-persister" "^4.27.1"
