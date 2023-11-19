@@ -3,20 +3,22 @@ import { useCallback, useEffect, useRef } from 'react';
 import ReactCanvasConfetti from 'react-canvas-confetti';
 
 export default function Confetti() {
-  const refAnimationInstance = useRef(null);
+  const refAnimationInstance = useRef<((config: Object) => void) | null>(null);
 
   const getInstance = useCallback((instance: any) => {
     refAnimationInstance.current = instance;
   }, []);
 
   const makeShot = useCallback((particleRatio: number, opts: any) => {
-    refAnimationInstance.current &&
+    if (refAnimationInstance.current) {
       refAnimationInstance.current({
         ...opts,
         origin: { y: 0.7 },
-        particleCount: Math.floor(200 * particleRatio)
+        particleCount: Math.floor(200 * particleRatio),
       });
-  }, []);
+    }
+  }, [/* dependencies */]);
+
 
   useEffect(() => fire(), []);
 
