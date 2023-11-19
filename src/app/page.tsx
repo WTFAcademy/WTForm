@@ -226,7 +226,7 @@ export default function Home() {
       textFeedback: '',
     },
     onSubmit: values => {
-      alert(JSON.stringify(values, null, 2));
+      // alert(JSON.stringify(values, null, 2));
       if ((lensState === 1 && easState === 1) 
       || (lensState === 1 && worldState === 1) 
       || easState === 1 && worldState === 1) {
