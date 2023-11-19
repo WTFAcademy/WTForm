@@ -35,7 +35,7 @@ function Label({ children, className }: any) {
 }
 
 function Button({ children, onClickHandler, variant = 'primary', ...props }: any) { 
-  let btnClasses = 'inline-flex items-center justify-center p-0.5 mb-2 me-2 overflow-hidden text-[18px] tracking-wider font-semibold rounded-[66px] group bg-gradient-to-br focus:ring-4 focus:outline-none ';
+  let btnClasses = 'inline-flex items-center justify-center p-0.5 mb-2 me-2 overflow-hidden text-[16px] tracking-wider font-semibold rounded-[66px] group bg-gradient-to-br focus:ring-4 focus:outline-none ';
   let btnClassesSpan;
   
   switch(variant) {
@@ -46,7 +46,7 @@ function Button({ children, onClickHandler, variant = 'primary', ...props }: any
         from-teal-300 to-lime-300 
         group-hover:from-teal-300 group-hover:to-lime-300 hover:text-green-900
         focus:ring-lime-200 dark:focus:ring-lime-800`;
-       btnClassesSpan = "px-12 py-3.5 transition-all ease duration-25 bg-white bg-opacity-0 dark:bg-gray-900 rounded-[66px] group-hover:bg-opacity-40";
+       btnClassesSpan = "px-8 py-2.5 tranition-all ease duration-25 bg-white bg-opacity-0 dark:bg-gray-900 rounded-[66px] group-hover:bg-opacity-40";
        break;
       }
     case 'blue': {
@@ -363,7 +363,7 @@ export default function Home() {
             {prompt}
           </Label>
           {description ? (
-            <div className="text-base pt-2 leading-tight text-zinc-500">
+            <div className="text-base pt-2 text-[16px] leading-tight text-zinc-500">
               {description}
             </div>
           ) : null}
@@ -376,21 +376,24 @@ export default function Home() {
   /** End Formik */
 
   return (
-    <main className="flex px-10 py-12 min-h-screen flex-col items-center justify-between p-24 text-indigo-950 font-['DM Sans']">
+    <main className="flex px-12 py-12 max-w-[1320px] min-h-screen flex-col items-center justify-between p-24 text-indigo-950 font-['DM Sans']">
       {isConfettiVisible && <Confetti />}
 
-      <div className="w-full text-stone-900 font-['Figma Hand'] font-bold leading-[96px]"> 
+      <div className="w-full flex text-stone-900 font-['Figma Hand'] font-bold leading-[96px] items-center"> 
+        <span className="text-[64px] mr-3">
+          👽
+        </span>
         <LogoSVG />
       </div>
-      <div className="w-full mt-20 mb-10 py-12 px-8 bg-stone-50 rounded-[18px] shadow text-center text-2xl font-bold">
+      <div className="w-full mt-8 mb-8 py-8 px-8 bg-stone-50 rounded-[18px] shadow text-center text-2xl font-bold">
         ETHGlobal Istanbul Hackathon Feedback Form
       </div>
 
-      <div className="max-w-[620px] mb-8 text-center text-indigo-950">
-        <h2 className="text-indigo-950 pt-8 pb-4 text-[34px] font-bold font-['DM Sans'] leading-[46px]">
+      <div className="max-w-[620px] mb-4 text-center text-indigo-950">
+        <h2 className="text-indigo-950 pb-1 text-[22px] font-bold font-['DM Sans'] leading-[46px]">
           Your Feedback Matters
         </h2>
-        <h3 className="text-slate-500 text-lg font-medium leading-[30px]">
+        <h3 className="text-slate-500 text-[16px] font-medium leading-[26px]">
           Hacker, thanks for participating at our event. Please help us improve future events by answering this quick survey.
         </h3>
       </div>
@@ -399,7 +402,7 @@ export default function Home() {
         <div className="text-2xl font-bold leading-[35px] text-indigo-950">
           Decentralized Identities
         </div>
-        <div className="font-['DM Sans'] text-md font-medium leading-[30px] text-slate-500">
+        <div className="font-['DM Sans'] text-[16px] font-medium leading-[30px] text-slate-500">
           Please provide your decentralized identities.
         </div>
   
@@ -407,12 +410,12 @@ export default function Home() {
         <div className="h-[2px] my-8 w-full rounded-[34px] border border-gray-100 bg-stone-50 shadow"></div>
 
         <div>
-          <Label className="pb-5">WalletConnect</Label>
+          <Label className="mt-2 pb-4">WalletConnect</Label>
           <WalletConnectButton />
         </div>
 
         <div>
-          <Label className="pb-5">Lens</Label>
+          <Label className="mt-2 pb-4">Lens</Label>
           {
             lensState === 0 ?
             <Button onClickHandler={verifyLens}>Connect</Button> : lensState === 1 
@@ -422,12 +425,12 @@ export default function Home() {
         </div>
 
         <div>
-          <Label>World ID</Label>
+          <Label className="mt-2 pb-4">World ID</Label>
           <Button onClickHandler={verifyWorldID}>Connect</Button>
         </div>
 
         <div>
-          <Label className="pb-5">EAS</Label>
+          <Label className="mt-2 pb-4">EAS</Label>
           {
             easState === 0 ?
             <Button onClickHandler={verifyEAS}>Attest</Button> : easState === 1 
