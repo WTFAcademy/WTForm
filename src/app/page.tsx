@@ -261,10 +261,12 @@ export default function Home() {
       }
       default: {
         inputJSX = (
-          <select id={formik.values[name]} 
-            name={formik.values[name]} 
+          <select id={name} 
+            name={name}
+            value={formik.values[name]}
             className={inputSharedClasses}
-            onChange={formik.handleChange}>
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}>
             <option value={undefined} selected disabled hidden>{placeholder || 'Select an answer'}</option>
             {options ? options.map((option: any, index: number) => {
               return <option value={option.value} key={`form-entry-select-${name}-${index}`}>{option.label}</option>
@@ -373,13 +375,6 @@ export default function Home() {
       <div className="text-2xl font-bold leading-[35px] text-indigo-950">
         Your Feedback
       </div>
-
-      {/* {formik.values.rateOverall}
-      {formik.values.rateSupport}
-      {formik.values.rateRecommend}
-      {formik.values.selectSource}
-      {formik.values.selectGoal}
-      {formik.values.textFeedback} */}
       
       <form onSubmit={formik.handleSubmit}>
         <FormEntry
