@@ -140,7 +140,11 @@ export default function Home() {
         setLensState(2);
       } else {
         setLensState(1);
-        setLensText(managedProfiles.items[0].id);
+        if (managedProfiles.items[0].handle) {
+          setLensText(managedProfiles.items[0].handle!.toString());
+        } else {
+          setLensText(managedProfiles.items[0].id);
+        }
       }
     }
   }
