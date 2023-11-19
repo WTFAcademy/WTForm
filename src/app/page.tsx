@@ -159,7 +159,7 @@ export default function Home() {
 
     console.log(address);
 
-    await fetch('https://easscan.org/graphql', {
+    await fetch('https://sepolia.easscan.org/graphql', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: requestBody,
