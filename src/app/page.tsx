@@ -12,6 +12,7 @@ import { LensClient, production } from '@lens-protocol/client';
 import { useAuth0 } from "@auth0/auth0-react";
 import { EAS } from "@ethereum-attestation-service/eas-sdk";
 import auth0 from 'auth0-js';
+import axios from 'axios';
 
 import Confetti from '@/components/confetti';
 
@@ -101,6 +102,7 @@ export default function Home() {
   const [error, setError] = useState(null);
   const [easState, setEasState] = useState(0); // 0 as initial state, 1 as attested, 2 as not attested 
   const [lensState, setLensState] = useState(0); // 0 as initial state, 1 as attested, 2 as not attested
+  const [worldState, setWorldState] = useState(0); // 0 as initial state, 1 as attested, 2 as not attested
   // const [lensText, setLensText] = useState("");
   const { loginWithRedirect } = useAuth0();
   const { signMessageAsync } = useSignMessage();
@@ -108,14 +110,6 @@ export default function Home() {
   const [isConfettiVisible, setIsConfettiVisible] = useState(false);
 
   let { address, /* isConnecting: isConnectingWalletConnect, isDisconnected */ } = useAccount();
-
-  useEffect(() => {
-    if (easState === 1 || lensState === 1) {
-      setAuthenticated(true);
-    } else {
-      setAuthenticated(false);
-    }
-  }, [easState, lensState]);
 
   async function verifyLens() {
     const client = new LensClient({
@@ -140,6 +134,7 @@ export default function Home() {
       await client.authentication.authenticate({ id, signature });
 
       const isAuthenticated = await client.authentication.isAuthenticated();
+      console.log(`Lens Authenticated: `, isAuthenticated);
       if (!isAuthenticated) {
         setLensState(2);
       } else {
@@ -202,6 +197,7 @@ export default function Home() {
       domain: 'dev-0iu7uwkq2z18z0b6.us.auth0.com',
     }, function (err: any, authResult: any) {
       //do something
+      // TODO set worldState to true if success.
       console.log(authResult);
       console.log(err);
     });
@@ -234,12 +230,65 @@ export default function Home() {
       textFeedback: '',
     },
     onSubmit: values => {
-      alert(JSON.stringify(values, null, 2));
+      // alert(JSON.stringify(values, null, 2));
+      if ((lensState === 1 && easState === 1) 
+      || (lensState === 1 && worldState === 1) 
+      || easState === 1 && worldState === 1) {
+        
+        var data = JSON.stringify({
+          "data": [
+            {
+              "question": "How would you rate this event overall?",
+              "answer": values.rateOverall
+            },
+            {
+              "question": "How would you rate the technical support you received during the event?",
+              "answer": values.rateSupport
+            },
+            {
+              "question": "Would you recommend the hackathon to a friend or colleague?",
+              "answer": values.rateRecommend
+            },
+            {
+              "question": "How did you hear about this hackathon?",
+              "answer": values.selectSource
+            },
+            {
+              "question": "What were you hoping to achieve at the hackathon?",
+              "answer": values.selectGoal
+            },
+            {
+              "question": "Do you have any other feedback or suggestions on how we can make future events better?",
+              "answer": values.textFeedback
+            },
+          ]
+        });
 
-      setIsConfettiVisible(true);
-      setTimeout(() => { 
-        setIsConfettiVisible(false);
-      }, 5000);
+        var config = {
+          method: 'post',
+          url: 'https://api.wtf.academy/hackathon/feedback',
+          headers: { 
+            'Content-Type': 'application/json'
+          },
+          data : data
+        };
+
+        axios(config)
+        .then(function (response) {
+          console.log(JSON.stringify(response.data));
+          alert("Your Response has been submitted!");
+
+          setIsConfettiVisible(true);
+          setTimeout(() => { 
+            setIsConfettiVisible(false);
+          }, 5000);
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
+      } else {
+        alert("You are not authenticated! At least two of the three methods should be authenticated.");
+      }
     },
     validate: values => {
       const errors: any = {};
@@ -469,7 +518,7 @@ export default function Home() {
               placeholder="Please mention here" />
         </div>
   
-        <Button>
+        <Button >
           Submit{' '}
           <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
             →
@@ -483,76 +532,6 @@ export default function Home() {
       
 
       {/* EVERYTHING BELOW THIS IS FROM CREATE-REACT-APP */}
-
-      <div className="mb-32 grid text-center lg:max-w-5xl lg:w-full lg:mb-0 lg:grid-cols-4 lg:text-left">
-        <a
-          href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Docs{' '}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Find in-depth information about Next.js features and API.
-          </p>
-        </a>
-
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Learn{' '}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Learn about Next.js in an interactive course with&nbsp;quizzes!
-          </p>
-        </a>
-
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Templates{' '}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Explore starter templates for Next.js.
-          </p>
-        </a>
-
-        <a
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Deploy{' '}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Instantly deploy your Next.js site to a shareable URL with Vercel.
-          </p>
-        </a>
-      </div>
     </main>
   )
 }
