@@ -448,11 +448,31 @@ export default function Home() {
             { value: 'other', label: 'Other' },
           ]}
           />
-        <FormEntry
+        {/* <FormEntry
           variant="textarea"
           prompt="Do you have any other feedback or suggestions on how we can make future events better?"
           name="textFeedback"
-          />
+          /> */}
+
+        <div className="mb-8">
+          <div className="mb-8">
+          <Label htmlFor="textFeedback" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+              Do you have any other feedback or suggestions on how we can make future events better?
+            </Label>
+          </div>
+          <textarea 
+              id="textFeedback" 
+              name="textFeedback"
+              rows={4} 
+              value={formik.values.textFeedback}
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+              className={`block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 
+                focus:ring-blue-500 focus:border-blue-500 
+                dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500
+                ${formik.errors.textFeedback ? 'border-red-500' : ''}`}
+              placeholder="Please mention here" />
+        </div>
   
         <Button>
           Submit{' '}
