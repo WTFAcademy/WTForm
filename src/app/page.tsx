@@ -238,14 +238,11 @@ export default function Home() {
       alert(JSON.stringify(values, null, 2));
     },
     validate: values => {
-      const errors = {};
+      const errors: any = {};
   
       for (const key in values) {
-        // Use type assertion to tell TypeScript that key is indeed a key of values
-        const specificKey = key as keyof typeof values;
-      
-        if (!values[specificKey] || values[specificKey] === '') {
-          errors[specificKey] = 'Required';
+        if (!values[key as keyof FormikValues] || values[key as keyof FormikValues] === '') {
+          errors[key as keyof FormikValues] = 'Required';
         }
       }
   
