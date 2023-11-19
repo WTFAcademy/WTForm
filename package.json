@@ -23,6 +23,7 @@
     "next": "14.0.3",
     "next-auth": "^4.24.5",
     "react": "^18",
+    "react-canvas-confetti": "^1.4.0",
     "react-dom": "^18",
     "viem": "^1.19.3",
     "wagmi": "^1.4.7",

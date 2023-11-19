@@ -14,6 +14,8 @@ import { EAS } from "@ethereum-attestation-service/eas-sdk";
 import auth0 from 'auth0-js';
 import axios from 'axios';
 
+import Confetti from '@/components/confetti';
+
 // UI Components (Generic)
 
 function Card({ children }: any) { 
@@ -104,6 +106,8 @@ export default function Home() {
   // const [lensText, setLensText] = useState("");
   const { loginWithRedirect } = useAuth0();
   const { signMessageAsync } = useSignMessage();
+
+  const [isConfettiVisible, setIsConfettiVisible] = useState(false);
 
   let { address, /* isConnecting: isConnectingWalletConnect, isDisconnected */ } = useAccount();
 
@@ -273,6 +277,11 @@ export default function Home() {
         .then(function (response) {
           console.log(JSON.stringify(response.data));
           alert("Your Response has been submitted!");
+
+          setIsConfettiVisible(true);
+          setTimeout(() => { 
+            setIsConfettiVisible(false);
+          }, 5000);
         })
         .catch(function (error) {
           console.log(error);
@@ -368,6 +377,7 @@ export default function Home() {
 
   return (
     <main className="flex px-10 py-12 min-h-screen flex-col items-center justify-between p-24 text-indigo-950 font-['DM Sans']">
+      {isConfettiVisible && <Confetti />}
 
       <div className="w-full text-stone-900 font-['Figma Hand'] font-bold leading-[96px]"> 
         <LogoSVG />
