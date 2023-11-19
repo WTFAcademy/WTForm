@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import Image from 'next/image'
-import { useFormik } from 'formik';
+import { useField, useFormik } from 'formik';
 import { useWeb3Modal } from '@web3modal/wagmi/react';
 import { useAccount, useSignMessage } from 'wagmi';
 
@@ -195,6 +195,7 @@ export default function Home() {
   });
 
   function FormEntry(_props: { name: string, prompt: string, description?: string, placeholder?: string, variant?: string, options?: any[]}) {
+    // todo: uncomment to unlock buck
     // const [field, meta, helpers] = useField(_props);
     const { description, name, options, placeholder, prompt,  variant, ...props } = _props;
     const inputSharedClasses = `bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 ${formik.errors[name] ? 'border-red-500' : ''}`;
@@ -319,6 +320,13 @@ export default function Home() {
       <div className="text-2xl font-bold leading-[35px] text-indigo-950">
         Your Feedback
       </div>
+
+      {/* {formik.values.rateOverall}
+      {formik.values.rateSupport}
+      {formik.values.rateRecommend}
+      {formik.values.selectSource}
+      {formik.values.selectGoal}
+      {formik.values.textFeedback} */}
       
       <form onSubmit={formik.handleSubmit}>
         <FormEntry
