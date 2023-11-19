@@ -228,8 +228,11 @@ export default function Home() {
       const errors = {};
   
       for (const key in values) {
-        if (!values[key] || values[key] === '') {
-          errors[key] = 'Required';
+        // Use type assertion to tell TypeScript that key is indeed a key of values
+        const specificKey = key as keyof typeof values;
+      
+        if (!values[specificKey] || values[specificKey] === '') {
+          errors[specificKey] = 'Required';
         }
       }
   
